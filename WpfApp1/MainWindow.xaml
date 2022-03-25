@@ -6,12 +6,9 @@
         xmlns:local="clr-namespace:WpfApp1"
         mc:Ignorable="d"
         Title="MainWindow" Height="280" Width="625">
-    <Window.Resources> 
+    <Window.Resources>
         <Style TargetType="Button">
             <Setter Property="Background" Value="GreenYellow"/>
-        </Style>
-        <Style TargetType="Window">
-            <Setter Property="Background" Value="Gray"/>
         </Style>
     </Window.Resources>
     <StackPanel Margin="5">
@@ -30,6 +27,14 @@
                 <Label HorizontalAlignment="Center" Content="New emplyer"></Label>
                 <StackPanel Orientation="Horizontal">
                     <Grid>
+                        <Grid.Resources>
+                            <Style TargetType="Label">
+                                <Setter Property="Background" Value="LightBlue"/>
+                            </Style>
+                            <Style TargetType="TextBox">
+                                <Setter Property="Background" Value="LightCoral"/>
+                            </Style>
+                        </Grid.Resources>
                         <Grid.RowDefinitions>
                             <RowDefinition></RowDefinition>
                             <RowDefinition></RowDefinition>
