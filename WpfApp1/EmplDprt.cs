@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 
 namespace WpfApp1
 {
@@ -29,5 +30,21 @@ namespace WpfApp1
             return $"{FirstName}\t{LastName}\t{Age}\t{Departsment}\t{Post}\t{Xp}";
         }
 
+    }
+    public class EmployeeList
+    {
+        public ObservableCollection<Emploer> List { get; set; } = new ObservableCollection<Emploer>();
+    }
+    public class View
+    {
+        public EmployeeList EmployeeList { get; set; }
+        
+        public View()
+        {
+            EmployeeList = new EmployeeList() 
+            { List = { new Emploer("Nick", "Gray", "First", "Administrator", 34, 10), 
+                       new Emploer("Yan", "Green", "First", "Inspector", 26, 5),
+                       new Emploer("Anna", "Yellow", "Second", "Administrator", 29, 8)} };
+        }
     }
 }

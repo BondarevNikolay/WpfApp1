@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Collections.ObjectModel;
+
 
 namespace WpfApp1
 {
@@ -20,14 +22,25 @@ namespace WpfApp1
     /// </summary>
     public partial class MainWindow : Window
     {
+        public ObservableCollection<Emploer> EmployeeList = new ObservableCollection<Emploer>();
         public MainWindow()
         {
             InitializeComponent();
-            //data_buffer.empls.Clear();
-            data_buffer.empls.Add(new Emploer("Nick", "Gray", "First", "Administrator", 34, 10));
-            data_buffer.empls.Add(new Emploer("Yan", "Green", "First", "Inspector", 26, 5));
-            data_buffer.empls.Add(new Emploer("Anna", "Yellow", "Second", "Administrator", 29, 8));
-            Load();
+
+            EmployeeList.Clear();
+            EmployeeList.Add(new Emploer("Nick", "Gray", "First", "Administrator", 34, 10));
+            EmployeeList.Add(new Emploer("Yan", "Green", "First", "Inspector", 26, 5));
+            EmployeeList.Add(new Emploer("Anna", "Yellow", "Second", "Administrator", 29, 8));
+
+            empl_list.ItemsSource = EmployeeList;
+            //DataContext = new View();
+            
+            /*Binding bind = new Binding();
+            bind.ElementName = "";
+            bind.Path = new PropertyPath("ItemSource");
+            bind.Mode = BindingMode.OneWay;
+            empl_list.SetBinding(ListView.ItemsSourceProperty, bind);*/
+
         }
         private void Load()
         {
@@ -45,38 +58,45 @@ namespace WpfApp1
 
         private void btnUpdate_Click(object sender, RoutedEventArgs e)
         {
-            empl_list.Items.Clear();
-            Load();
+            //empl_list.Items.Clear();
+            //Load();
         }
         
         private void btnAdd_Click_1(object sender, RoutedEventArgs e)
         {
-            data_buffer.empls.Add(new Emploer(Convert.ToString(tbFirstName.Text), Convert.ToString(tbLastName.Text), Convert.ToString(tbDepartament.Text), Convert.ToString(tbPost.Text), Convert.ToInt32(tbAge.Text), Convert.ToInt32(tbExprience.Text)));
+
+             EmployeeList.Add(new Emploer(Convert.ToString(tbFirstName.Text), Convert.ToString(tbLastName.Text), Convert.ToString(tbDepartament.Text), Convert.ToString(tbPost.Text), Convert.ToInt32(tbAge.Text), Convert.ToInt32(tbExprience.Text)));
 
         }
 
         private void MenuItem_Click_1(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("This is little WPF application without data binding.");
+            MessageBox.Show("This is little WPF application with ObservableCollection binding.");
         }
 
         private void empl_list_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            data_buffer.selectedinex = empl_list.SelectedIndex;
-            if (empl_list.SelectedIndex >= 0 && empl_list.SelectedIndex <= data_buffer.empls.Count)
-            {
-                tbAge.Text = data_buffer.empls[empl_list.SelectedIndex].Age.ToString();
-                tbDepartament.Text = data_buffer.empls[empl_list.SelectedIndex].Departsment.ToString();
-                tbExprience.Text = data_buffer.empls[empl_list.SelectedIndex].Xp.ToString();
-                tbFirstName.Text = data_buffer.empls[empl_list.SelectedIndex].FirstName.ToString();
-                tbLastName.Text = data_buffer.empls[empl_list.SelectedIndex].LastName.ToString();
-                tbPost.Text = data_buffer.empls[empl_list.SelectedIndex].Post.ToString();
+
+
+            int indx = empl_list.SelectedIndex;
+
+            //data_buffer.selectedinex = empl_list.SelectedIndex;
+            if (indx >= 0 && indx <= EmployeeList.Count)
+            {                
+                tbAge.Text = EmployeeList[indx].Age.ToString();
+                tbDepartament.Text = EmployeeList[indx].Departsment.ToString();
+                tbExprience.Text = EmployeeList[indx].Xp.ToString();
+                tbFirstName.Text = EmployeeList[indx].FirstName.ToString();
+                tbLastName.Text = EmployeeList[indx].LastName.ToString();
+                tbPost.Text = EmployeeList[indx].Post.ToString();
             }
         }
 
         private void btnChange_Click(object sender, RoutedEventArgs e)
         {
-            data_buffer.empls[data_buffer.selectedinex] = new Emploer(Convert.ToString(tbFirstName.Text), Convert.ToString(tbLastName.Text), Convert.ToString(tbDepartament.Text), Convert.ToString(tbPost.Text), Convert.ToInt32(tbAge.Text), Convert.ToInt32(tbExprience.Text));
+            int indx = empl_list.SelectedIndex;
+            if (indx >= 0 && indx <= EmployeeList.Count)
+            EmployeeList[empl_list.SelectedIndex] = new Emploer(Convert.ToString(tbFirstName.Text), Convert.ToString(tbLastName.Text), Convert.ToString(tbDepartament.Text), Convert.ToString(tbPost.Text), Convert.ToInt32(tbAge.Text), Convert.ToInt32(tbExprience.Text));
         }
     }
 }
