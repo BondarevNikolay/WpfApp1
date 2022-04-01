@@ -43,7 +43,7 @@ namespace WpfApp1
                 SqlCommand command = new SqlCommand("SELECT * FROM Employers", connection);
                 //SqlCommand del = new SqlCommand("Delete From Employers Where fName_nvc50='Anna'", connection);
                 //SqlCommand update = new SqlCommand("Update Employers Set fName_nvc50='Anny' Where fName_nvc50='Anna'", connection);
-                //SqlCommand add = new SqlCommand("Insert Into Employers(fName_nvc50, lName_nvc50, Departament_nvc50, Post_nvc50, Age_int, XP_int) Value ('','','','','' ... )", connection);
+                //SqlCommand add = new SqlCommand("Insert Into Employers(fName_nvc50, lName_nvc50, Departament_nvc50, Post_nvc50, Age_int, XP_int) Values ('','','','','' ... )", connection);
 
                 SqlDataReader reader = command.ExecuteReader();
 
@@ -83,13 +83,25 @@ namespace WpfApp1
             try
             {
                 connection.Open();
-                SqlCommand add = new SqlCommand("Insert Into Employers(fName_nvc50, lName_nvc50, Departament_nvc50, Post_nvc50, Age_int, XP_int) " +
-                    "Value ('" + Convert.ToString(tbFirstName.Text) +
-                    "', '"+Convert.ToString(tbLastName.Text) +
-                    "', '" + Convert.ToString(tbDepartament.Text)+
-                    "', '" + Convert.ToString(tbPost.Text)+
-                    "', " + Convert.ToInt32(tbPost.Text)+
-                    ", " + Convert.ToInt32(tbAge.Text)+")", connection);
+                //string command = "Insert Into Employers(fName_nvc50, lName_nvc50, Departament_nvc50, Post_nvc50, Age_int, XP_int) Values(@fName,@lName,@Departament,@Post,@Age,@XP)";
+                /*string command = "Insert Into Employers Values(@fName,@lName,@Departament,@Post,@Age,@XP)";
+
+                SqlCommand add = new SqlCommand(command, connection);
+                add.Parameters.AddWithValue("@fName", tbFirstName.Text);
+                add.Parameters.AddWithValue("@lName", tbLastName.Text);
+                add.Parameters.AddWithValue("@Departament", tbDepartament.Text);
+                add.Parameters.AddWithValue("@Post", tbPost.Text);
+                add.Parameters.AddWithValue("@Age", tbAge.Text);
+                add.Parameters.AddWithValue("@XP", tbExprience.Text);*/
+
+                SqlCommand add = new SqlCommand("Insert Into Employers(fName_nvc50,lName_nvc50,Departament_nvc50,Post_nvc50,Age_int,XP_int)" +
+                    "Values ('" + Convert.ToString(tbFirstName.Text) +
+                    "','" + Convert.ToString(tbLastName.Text) +
+                    "','" + Convert.ToString(tbDepartament.Text) +
+                    "','" + Convert.ToString(tbPost.Text) +
+                    "','" + Convert.ToInt32(tbAge.Text) +
+                    "'," + Convert.ToInt32(tbExprience.Text) + 
+                    ")", connection);
                 add.ExecuteNonQuery();
 
             }
@@ -133,12 +145,14 @@ namespace WpfApp1
             {
                 connection.Open();
                 SqlCommand update = new SqlCommand("Update Employers Set " +
-                    ", fName_nvc50="+ Convert.ToString(tbFirstName.Text) +
-                    ", lName_nvc50="+ Convert.ToString(tbLastName.Text) +
-                    ", Departament_nvc50" + Convert.ToString(tbDepartament.Text) +
-                    ", Post_nvc50" + Convert.ToString(tbPost.Text) +
-                    ", Age_int" + Convert.ToInt32(tbPost.Text) +
-                    ", XP_int" + Convert.ToInt32(tbAge.Text) + " Where ID=" + Convert.ToString(tbID.Text), connection);
+                    "fName_nvc50='"+ Convert.ToString(tbFirstName.Text) +
+                    "', lName_nvc50='"+ Convert.ToString(tbLastName.Text) +
+                    "', Departament_nvc50='" + Convert.ToString(tbDepartament.Text) +
+                    "', Post_nvc50='" + Convert.ToString(tbPost.Text) +
+                    "', Age_int=" + Convert.ToInt32(tbAge.Text) +
+                    ", XP_int=" + Convert.ToInt32(tbExprience.Text) + 
+                    "Where " +
+                    "id=" + Convert.ToInt32(tbID.Text), connection);
 
                 update.ExecuteNonQuery();
 
