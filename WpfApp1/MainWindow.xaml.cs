@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;
+using System.Data.SqlClient;
 
 
 namespace WpfApp1
@@ -26,29 +27,42 @@ namespace WpfApp1
         public MainWindow()
         {
             InitializeComponent();
-
-            EmployeeList.Clear();
-            EmployeeList.Add(new Emploer("Nick", "Gray", "First", "Administrator", 34, 10));
-            EmployeeList.Add(new Emploer("Yan", "Green", "First", "Inspector", 26, 5));
-            EmployeeList.Add(new Emploer("Anna", "Yellow", "Second", "Administrator", 29, 8));
-
-            empl_list.ItemsSource = EmployeeList;
-            //DataContext = new View();
+            Load();
             
-            /*Binding bind = new Binding();
-            bind.ElementName = "";
-            bind.Path = new PropertyPath("ItemSource");
-            bind.Mode = BindingMode.OneWay;
-            empl_list.SetBinding(ListView.ItemsSourceProperty, bind);*/
+
 
         }
         private void Load()
         {
-            empl_list.Items.Clear();
+            string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Draugort\source\repos\WpfApp1\WpfApp1\db\EmployeeDB.mdf;Integrated Security=True";
+            //string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename='|DataDirectory|AppData\db\EmployeeDB.mdf;Integrated Security=True"; //providerName=System.Data.SqlClient"; // Пробовал относительные пути, но что-то не сработало =(
+            SqlConnection connection = new SqlConnection(connectionString);
+            try
+            {
+                connection.Open();
+                SqlCommand command = new SqlCommand("SELECT * FROM Employers", connection);
+                //SqlCommand del = new SqlCommand("Delete From Employers Where fName_nvc50='Anna'", connection);
+                //SqlCommand update = new SqlCommand("Update Employers Set fName_nvc50='Anny' Where fName_nvc50='Anna'", connection);
+                //SqlCommand add = new SqlCommand("Insert Into Employers(fName_nvc50, lName_nvc50, Departament_nvc50, Post_nvc50, Age_int, XP_int) Value ('','','','','' ... )", connection);
+
+                SqlDataReader reader = command.ExecuteReader();
+
+                EmployeeList.Clear();
+                while (reader.Read())
+                {
+                    EmployeeList.Add(new Emploer((string)reader["fName_nvc50"], (string)reader["lName_nvc50"], (string)reader["Departament_nvc50"], (string)reader["Post_nvc50"], (int)reader["Age_int"], (int)reader["XP_int"], (int)reader["id"]));
+                }
+            }
+            catch (Exception ex) { MessageBox.Show(ex.Message); }
+            finally { connection.Close(); }
+
+
+            empl_list.ItemsSource = EmployeeList;
+            /*empl_list.Items.Clear();
             foreach (Emploer emp in data_buffer.empls)
             {
                 empl_list.Items.Add(emp.ToString());
-            }
+            }*/
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
@@ -64,20 +78,37 @@ namespace WpfApp1
         
         private void btnAdd_Click_1(object sender, RoutedEventArgs e)
         {
+            string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Draugort\source\repos\WpfApp1\WpfApp1\db\EmployeeDB.mdf;Integrated Security=True";
+            SqlConnection connection = new SqlConnection(connectionString);
+            try
+            {
+                connection.Open();
+                SqlCommand add = new SqlCommand("Insert Into Employers(fName_nvc50, lName_nvc50, Departament_nvc50, Post_nvc50, Age_int, XP_int) " +
+                    "Value ('" + Convert.ToString(tbFirstName.Text) +
+                    "', '"+Convert.ToString(tbLastName.Text) +
+                    "', '" + Convert.ToString(tbDepartament.Text)+
+                    "', '" + Convert.ToString(tbPost.Text)+
+                    "', " + Convert.ToInt32(tbPost.Text)+
+                    ", " + Convert.ToInt32(tbAge.Text)+")", connection);
+                add.ExecuteNonQuery();
 
-             EmployeeList.Add(new Emploer(Convert.ToString(tbFirstName.Text), Convert.ToString(tbLastName.Text), Convert.ToString(tbDepartament.Text), Convert.ToString(tbPost.Text), Convert.ToInt32(tbAge.Text), Convert.ToInt32(tbExprience.Text)));
+            }
+            catch (Exception ex) { MessageBox.Show(ex.Message); }
+            finally { connection.Close(); }
 
+            //EmployeeList.Add(new Emploer(Convert.ToString(tbFirstName.Text), Convert.ToString(tbLastName.Text), Convert.ToString(tbDepartament.Text), Convert.ToString(tbPost.Text), Convert.ToInt32(tbAge.Text), Convert.ToInt32(tbExprience.Text), Convert.ToInt32(tbID.Text)));
+            Load();
         }
 
         private void MenuItem_Click_1(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("This is little WPF application with ObservableCollection binding.");
+            MessageBox.Show("This is little WPF application with ObservableCollection binding + DB");
         }
 
         private void empl_list_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
-
+            
             int indx = empl_list.SelectedIndex;
 
             //data_buffer.selectedinex = empl_list.SelectedIndex;
@@ -89,14 +120,61 @@ namespace WpfApp1
                 tbFirstName.Text = EmployeeList[indx].FirstName.ToString();
                 tbLastName.Text = EmployeeList[indx].LastName.ToString();
                 tbPost.Text = EmployeeList[indx].Post.ToString();
+                tbID.Text = EmployeeList[indx].ID.ToString();
             }
         }
 
         private void btnChange_Click(object sender, RoutedEventArgs e)
         {
             int indx = empl_list.SelectedIndex;
-            if (indx >= 0 && indx <= EmployeeList.Count)
-            EmployeeList[empl_list.SelectedIndex] = new Emploer(Convert.ToString(tbFirstName.Text), Convert.ToString(tbLastName.Text), Convert.ToString(tbDepartament.Text), Convert.ToString(tbPost.Text), Convert.ToInt32(tbAge.Text), Convert.ToInt32(tbExprience.Text));
+            string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Draugort\source\repos\WpfApp1\WpfApp1\db\EmployeeDB.mdf;Integrated Security=True";
+            SqlConnection connection = new SqlConnection(connectionString);
+            try
+            {
+                connection.Open();
+                SqlCommand update = new SqlCommand("Update Employers Set " +
+                    ", fName_nvc50="+ Convert.ToString(tbFirstName.Text) +
+                    ", lName_nvc50="+ Convert.ToString(tbLastName.Text) +
+                    ", Departament_nvc50" + Convert.ToString(tbDepartament.Text) +
+                    ", Post_nvc50" + Convert.ToString(tbPost.Text) +
+                    ", Age_int" + Convert.ToInt32(tbPost.Text) +
+                    ", XP_int" + Convert.ToInt32(tbAge.Text) + " Where ID=" + Convert.ToString(tbID.Text), connection);
+
+                update.ExecuteNonQuery();
+
+
+            }
+            catch (Exception ex) { MessageBox.Show(ex.Message); }
+            finally { connection.Close(); }
+
+
+            //if (indx >= 0 && indx <= EmployeeList.Count)
+            //EmployeeList[empl_list.SelectedIndex] = new Emploer(Convert.ToString(tbFirstName.Text), Convert.ToString(tbLastName.Text), Convert.ToString(tbDepartament.Text), Convert.ToString(tbPost.Text), Convert.ToInt32(tbAge.Text), Convert.ToInt32(tbExprience.Text), Convert.ToInt32(tbID.Text));
+            Load();
+        }
+
+        private void btnSentToDB_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void btnDelete_Click(object sender, RoutedEventArgs e)
+        {
+            
+
+            string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Draugort\source\repos\WpfApp1\WpfApp1\db\EmployeeDB.mdf;Integrated Security=True";
+            SqlConnection connection = new SqlConnection(connectionString);
+            try
+            {
+                connection.Open();
+                SqlCommand del = new SqlCommand("Delete From Employers Where id="+ Convert.ToString(empl_list.SelectedIndex), connection);
+                del.ExecuteNonQuery();
+
+                
+            }
+            catch (Exception ex) { MessageBox.Show(ex.Message); }
+            finally { connection.Close(); }
+            Load();
         }
     }
 }

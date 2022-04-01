@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp1"
         mc:Ignorable="d"
-        Title="MainWindow" Height="280" Width="625">
+        Title="MainWindow" Height="280" Width="675">
     <Window.Resources>
         <Style TargetType="Button">
             <Setter Property="Background" Value="GreenYellow"/>
@@ -53,6 +53,7 @@
                         <Label Grid.Row="3" Grid.Column="0" Content="Post"/>
                         <Label Grid.Row="4" Grid.Column="0" Content="Departamrnt"/>
                         <Label Grid.Row="5" Grid.Column="0" Content="Experience"/>
+                        <Label Grid.Row="6" Grid.Column="0" Content="ID"/>
 
                         <TextBox Grid.Row="0" Grid.Column="1" x:Name="tbFirstName"></TextBox>
                         <TextBox Grid.Row="1" Grid.Column="1" x:Name="tbLastName"></TextBox>
@@ -60,12 +61,17 @@
                         <TextBox Grid.Row="3" Grid.Column="1" x:Name="tbPost"></TextBox>
                         <TextBox Grid.Row="4" Grid.Column="1" x:Name="tbDepartament"></TextBox>
                         <TextBox Grid.Row="5" Grid.Column="1" x:Name="tbExprience"></TextBox>
+                        <TextBox Grid.Row="6" Grid.Column="1" x:Name="tbID"></TextBox>
+
                     </Grid>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <Button x:Name="btnAdd" Margin="5" Click="btnAdd_Click_1">Add</Button>
                     <Button x:Name="btnChange" Click="btnChange_Click" Margin="5">Change</Button>
-                    <Button x:Name="btnUpdate" Margin="5" Click="btnUpdate_Click" >Update</Button>
+                    <!--<Button x:Name="btnUpdate" Margin="5" Click="btnUpdate_Click" >Update</Button>-->
+                    <Button x:Name="btnDelete" Margin="5" Click="btnDelete_Click">Delete</Button>
+
+                    <!--<Button x:Name="btnSentToDB" Margin="5" Click="btnSentToDB_Click">Sent to DB</Button>-->
                 </StackPanel>
             </StackPanel>
         </StackPanel>
